@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتبة القرآن الكريم</title>
+    <style>
+        :root {
+            --primary: #1b4332;
+            --accent: #d4af37;
+            --bg-overlay: rgba(10, 25, 47, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.07);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            background: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
+                        url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80') center/cover fixed no-repeat;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--accent);
+            margin: 0 0 10px 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        select {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .player-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .reciter-image {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .info-title {
+            font-size: 1.4em;
+            margin: 10px 0;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>القرآن الكريم - أصوات نديّة</h1>
+        <p>استمع لصفوة القراء وبكل السور</p>
+    </header>
+
+    <div class="controls">
+        <select id="reciterSelect" onchange="loadSurahs()"></select>
+        <select id="surahSelect" onchange="playAudio()"></select>
+    </div>
+
+    <div class="player-card">
+        <img id="reciterImg" class="reciter-image" src="" alt="صورة القارئ">
+        <div id="playerTitle" class="info-title">اختر القارئ والسورة</div>
+        <audio id="audioPlayer" controls></audio>
+    </div>
+</div>
+
+<script>
+    const reciters = [
+        { id: "128", name: "ياسر الدوسري", img: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300" },
+        { id: "98", name: "محمود خليل الحصري", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300" },
+        { id: "108", name: "محمد صديق المنشاوي", img: "https://images.unsplash.com/photo-1511497584788-8767611136f6?w=300" },
+        { id: "102", name: "ماهر المعيقلي", img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300" },
+        { id: "29", name: "عبد الباسط عبد الصمد (المجود)", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300" },
+        { id: "64", name: "عبد الرحمن السديس", img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=300" },
+        { id: "54", name: "سعود الشريم", img: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=300" },
+        { id: "118", name: "مشارى العفاسي", img: "https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?w=300" }
+    ];
+
+    let surahsList = [];
+
+    async function init() {
+        const reciterSelect = document.getElementById('reciterSelect');
+        reciters.forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r.id;
+            opt.textContent = r.name;
+            reciterSelect.appendChild(opt);
+        });
+
+        try {
+            const res = await fetch('https://api.mp3quran.net/api/v3/surah');
+            const data = await res.json();
+            surahsList = data.suwar;
+            loadSurahs();
+        } catch (e) {
+            console.error("فشل جلب قائمة السور", e);
+        }
+    }
+
+    async function loadSurahs() {
+        const reciterId = document.getElementById('reciterSelect').value;
+        const surahSelect = document.getElementById('surahSelect');
+        const selectedReciter = reciters.find(r => r.id === reciterId);
+
+        document.getElementById('reciterImg').src = selectedReciter.img;
+        surahSelect.innerHTML = '';
+
+        try {
+            const res = await fetch(`https://api.mp3quran.net/api/v3/reciters?language=ar&reciter=${reciterId}`);
+            const data = await res.json();
+            const moshaf = data.reciters[0].moshaf[0];
+            const availableSurahs = moshaf.surah_list.split(',');
+            const serverUrl = moshaf.server;
+
+            availableSurahs.forEach(surahNum => {
+                const sObj = surahsList.find(s => s.id == surahNum);
+                if (sObj) {
+                    const opt = document.createElement('option');
+                    const padNum = String(surahNum).padStart(3, '0');
+                    opt.value = `${serverUrl}${padNum}.mp3`;
+                    opt.textContent = `${sObj.id}. سورة ${sObj.name}`;
+                    surahSelect.appendChild(opt);
+                }
+            });
+
+            playAudio();
+        } catch (e) {
+            console.error("خطأ بتشغيل الصوت", e);
+        }
+    }
+
+    function playAudio() {
+        const surahSelect = document.getElementById('surahSelect');
+        const reciterSelect = document.getElementById('reciterSelect');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playerTitle = document.getElementById('playerTitle');
+
+        const reciterName = reciterSelect.options[reciterSelect.selectedIndex].text;
+        const surahName = surahSelect.options[surahSelect.selectedIndex]?.text || '';
+
+        audioPlayer.src = surahSelect.value;
+        playerTitle.textContent = `${surahName} - بصوت ${reciterName}`;
+    }
+
+    init();
+</script>
+</body>
+</html>
