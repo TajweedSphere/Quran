@@ -8,7 +8,7 @@
         :root {
             --primary: #1b4332;
             --accent: #d4af37;
-            --bg-overlay: rgba(10, 25, 47, 0.85);
+            --bg-overlay: rgba(10, 25, 47, 0.88);
             --card-bg: rgba(255, 255, 255, 0.07);
         }
 
@@ -52,7 +52,7 @@
             padding: 12px;
             border-radius: 8px;
             border: 1px solid var(--accent);
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.85);
             color: #fff;
             font-size: 16px;
             outline: none;
@@ -69,12 +69,13 @@
         }
 
         .reciter-image {
-            width: 130px;
-            height: 130px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             border: 3px solid var(--accent);
             object-fit: cover;
             margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
         audio {
@@ -88,6 +89,22 @@
             margin: 10px 0;
             color: var(--accent);
         }
+
+        .download-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 25px;
+            background-color: var(--accent);
+            color: #000;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +112,7 @@
 <div class="container">
     <header>
         <h1>القرآن الكريم - أصوات نديّة</h1>
-        <p>استمع لصفوة القراء وبكل السور</p>
+        <p>استمع وحمّل لصفوة القراء وبكل السور</p>
     </header>
 
     <div class="controls">
@@ -107,19 +124,26 @@
         <img id="reciterImg" class="reciter-image" src="" alt="صورة القارئ">
         <div id="playerTitle" class="info-title">اختر القارئ والسورة</div>
         <audio id="audioPlayer" controls></audio>
+        <br>
+        <a id="downloadBtn" class="download-btn" href="#" download target="_blank">تحميل السورة MP3</a>
     </div>
 </div>
 
 <script>
     const reciters = [
-        { id: "128", name: "ياسر الدوسري", img: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300" },
-        { id: "98", name: "محمود خليل الحصري", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300" },
-        { id: "108", name: "محمد صديق المنشاوي", img: "https://images.unsplash.com/photo-1511497584788-8767611136f6?w=300" },
-        { id: "102", name: "ماهر المعيقلي", img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300" },
-        { id: "29", name: "عبد الباسط عبد الصمد (المجود)", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300" },
-        { id: "64", name: "عبد الرحمن السديس", img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=300" },
-        { id: "54", name: "سعود الشريم", img: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=300" },
-        { id: "118", name: "مشارى العفاسي", img: "https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?w=300" }
+        { id: "128", name: "ياسر الدوسري", server: "https://server11.mp3quran.net/yasser/", img: "https://www.mp3quran.net/images/reciters/128.jpg" },
+        { id: "98", name: "محمود خليل الحصري", server: "https://server13.mp3quran.net/husr/", img: "https://www.mp3quran.net/images/reciters/98.jpg" },
+        { id: "108", name: "محمد صديق المنشاوي (المجود)", server: "https://server10.mp3quran.net/minsh/mjw/", img: "https://www.mp3quran.net/images/reciters/108.jpg" },
+        { id: "102", name: "ماهر المعيقلي", server: "https://server12.mp3quran.net/maher/", img: "https://www.mp3quran.net/images/reciters/102.jpg" },
+        { id: "29", name: "عبد الباسط عبد الصمد (المجود)", server: "https://server7.mp3quran.net/basit/mjw/", img: "https://www.mp3quran.net/images/reciters/29.jpg" },
+        { id: "64", name: "عبد الرحمن السديس", server: "https://server11.mp3quran.net/sds/", img: "https://www.mp3quran.net/images/reciters/64.jpg" },
+        { id: "54", name: "سعود الشريم", server: "https://server7.mp3quran.net/shur/", img: "https://www.mp3quran.net/images/reciters/54.jpg" },
+        { id: "118", name: "مشاري العفاسي", server: "https://server8.mp3quran.net/afs/", img: "https://www.mp3quran.net/images/reciters/118.jpg" },
+        { id: "32", name: "سعد الغامدي", server: "https://server7.mp3quran.net/s_gmd/", img: "https://www.mp3quran.net/images/reciters/32.jpg" },
+        { id: "10", name: "أحمد بن علي العجمي", server: "https://server10.mp3quran.net/ajm/", img: "https://www.mp3quran.net/images/reciters/10.jpg" },
+        { id: "46", name: "أبو بكر الشاطري", server: "https://server11.mp3quran.net/shatri/", img: "https://www.mp3quran.net/images/reciters/46.jpg" },
+        { id: "114", name: "ناصر القطامي", server: "https://server6.mp3quran.net/qtm/", img: "https://www.mp3quran.net/images/reciters/114.jpg" },
+        { id: "74", name: "عبد الرشيد صوفي", server: "https://server16.mp3quran.net/sofi/Rewayat-Hafs-A'n-Asim/", img: "https://www.mp3quran.net/images/reciters/74.jpg" }
     ];
 
     let surahsList = [];
@@ -134,16 +158,16 @@
         });
 
         try {
-            const res = await fetch('https://api.mp3quran.net/api/v3/surah');
+            const res = await fetch('https://api.quran.com/api/v4/chapters?language=ar');
             const data = await res.json();
-            surahsList = data.suwar;
+            surahsList = data.chapters;
             loadSurahs();
         } catch (e) {
-            console.error("فشل جلب قائمة السور", e);
+            console.error("خطأ بتحميل السور", e);
         }
     }
 
-    async function loadSurahs() {
+    function loadSurahs() {
         const reciterId = document.getElementById('reciterSelect').value;
         const surahSelect = document.getElementById('surahSelect');
         const selectedReciter = reciters.find(r => r.id === reciterId);
@@ -151,28 +175,15 @@
         document.getElementById('reciterImg').src = selectedReciter.img;
         surahSelect.innerHTML = '';
 
-        try {
-            const res = await fetch(`https://api.mp3quran.net/api/v3/reciters?language=ar&reciter=${reciterId}`);
-            const data = await res.json();
-            const moshaf = data.reciters[0].moshaf[0];
-            const availableSurahs = moshaf.surah_list.split(',');
-            const serverUrl = moshaf.server;
+        surahsList.forEach(surah => {
+            const opt = document.createElement('option');
+            const padNum = String(surah.id).padStart(3, '0');
+            opt.value = `${selectedReciter.server}${padNum}.mp3`;
+            opt.textContent = `${surah.id}. سورة ${surah.name_arabic}`;
+            surahSelect.appendChild(opt);
+        });
 
-            availableSurahs.forEach(surahNum => {
-                const sObj = surahsList.find(s => s.id == surahNum);
-                if (sObj) {
-                    const opt = document.createElement('option');
-                    const padNum = String(surahNum).padStart(3, '0');
-                    opt.value = `${serverUrl}${padNum}.mp3`;
-                    opt.textContent = `${sObj.id}. سورة ${sObj.name}`;
-                    surahSelect.appendChild(opt);
-                }
-            });
-
-            playAudio();
-        } catch (e) {
-            console.error("خطأ بتشغيل الصوت", e);
-        }
+        playAudio();
     }
 
     function playAudio() {
@@ -180,12 +191,17 @@
         const reciterSelect = document.getElementById('reciterSelect');
         const audioPlayer = document.getElementById('audioPlayer');
         const playerTitle = document.getElementById('playerTitle');
+        const downloadBtn = document.getElementById('downloadBtn');
 
-        const reciterName = reciterSelect.options[reciterSelect.selectedIndex].text;
-        const surahName = surahSelect.options[surahSelect.selectedIndex]?.text || '';
+        if (surahSelect.options.length > 0) {
+            const reciterName = reciterSelect.options[reciterSelect.selectedIndex].text;
+            const surahName = surahSelect.options[surahSelect.selectedIndex].text;
+            const audioUrl = surahSelect.value;
 
-        audioPlayer.src = surahSelect.value;
-        playerTitle.textContent = `${surahName} - بصوت ${reciterName}`;
+            audioPlayer.src = audioUrl;
+            downloadBtn.href = audioUrl;
+            playerTitle.textContent = `${surahName} - بصوت ${reciterName}`;
+        }
     }
 
     init();
