@@ -131,28 +131,27 @@
 
 <script>
     const reciters = [
-        { id: "128", name: "ياسر الدوسري", server: "https://server11.mp3quran.net/yasser/", img: "https://www.mp3quran.net/images/reciters/128.jpg" },
-        { id: "98", name: "محمود خليل الحصري", server: "https://server13.mp3quran.net/husr/", img: "https://www.mp3quran.net/images/reciters/98.jpg" },
-        { id: "108", name: "محمد صديق المنشاوي (المجود)", server: "https://server10.mp3quran.net/minsh/mjw/", img: "https://www.mp3quran.net/images/reciters/108.jpg" },
-        { id: "102", name: "ماهر المعيقلي", server: "https://server12.mp3quran.net/maher/", img: "https://www.mp3quran.net/images/reciters/102.jpg" },
-        { id: "29", name: "عبد الباسط عبد الصمد (المجود)", server: "https://server7.mp3quran.net/basit/mjw/", img: "https://www.mp3quran.net/images/reciters/29.jpg" },
-        { id: "64", name: "عبد الرحمن السديس", server: "https://server11.mp3quran.net/sds/", img: "https://www.mp3quran.net/images/reciters/64.jpg" },
-        { id: "54", name: "سعود الشريم", server: "https://server7.mp3quran.net/shur/", img: "https://www.mp3quran.net/images/reciters/54.jpg" },
-        { id: "118", name: "مشاري العفاسي", server: "https://server8.mp3quran.net/afs/", img: "https://www.mp3quran.net/images/reciters/118.jpg" },
-        { id: "32", name: "سعد الغامدي", server: "https://server7.mp3quran.net/s_gmd/", img: "https://www.mp3quran.net/images/reciters/32.jpg" },
-        { id: "10", name: "أحمد بن علي العجمي", server: "https://server10.mp3quran.net/ajm/", img: "https://www.mp3quran.net/images/reciters/10.jpg" },
-        { id: "46", name: "أبو بكر الشاطري", server: "https://server11.mp3quran.net/shatri/", img: "https://www.mp3quran.net/images/reciters/46.jpg" },
-        { id: "114", name: "ناصر القطامي", server: "https://server6.mp3quran.net/qtm/", img: "https://www.mp3quran.net/images/reciters/114.jpg" },
-        { id: "74", name: "عبد الرشيد صوفي", server: "https://server16.mp3quran.net/sofi/Rewayat-Hafs-A'n-Asim/", img: "https://www.mp3quran.net/images/reciters/74.jpg" }
+        { name: "ياسر الدوسري", server: "https://server11.mp3quran.net/yasser/", img: "https://www.mp3quran.net/images/reciters/128.jpg" },
+        { name: "ماهر المعيقلي", server: "https://server12.mp3quran.net/maher/", img: "https://www.mp3quran.net/images/reciters/102.jpg" },
+        { name: "عبد الرحمن السديس", server: "https://server11.mp3quran.net/sds/", img: "https://www.mp3quran.net/images/reciters/64.jpg" },
+        { name: "سعود الشريم", server: "https://server7.mp3quran.net/shur/", img: "https://www.mp3quran.net/images/reciters/54.jpg" },
+        { name: "مشاري العفاسي", server: "https://server8.mp3quran.net/afs/", img: "https://www.mp3quran.net/images/reciters/118.jpg" },
+        { name: "سعد الغامدي", server: "https://server7.mp3quran.net/s_gmd/", img: "https://www.mp3quran.net/images/reciters/32.jpg" },
+        { name: "أحمد بن علي العجمي", server: "https://server10.mp3quran.net/ajm/", img: "https://www.mp3quran.net/images/reciters/10.jpg" },
+        { name: "أبو بكر الشاطري", server: "https://server11.mp3quran.net/shatri/", img: "https://www.mp3quran.net/images/reciters/46.jpg" },
+        { name: "ناصر القطامي", server: "https://server6.mp3quran.net/qtm/", img: "https://www.mp3quran.net/images/reciters/114.jpg" },
+        { name: "محمود خليل الحصري", server: "https://server13.mp3quran.net/husr/", img: "https://www.mp3quran.net/images/reciters/98.jpg" },
+        { name: "محمد صديق المنشاوي", server: "https://server10.mp3quran.net/minsh/", img: "https://www.mp3quran.net/images/reciters/108.jpg" },
+        { name: "عبد الباسط عبد الصمد", server: "https://server7.mp3quran.net/basit/", img: "https://www.mp3quran.net/images/reciters/29.jpg" }
     ];
 
     let surahsList = [];
 
     async function init() {
         const reciterSelect = document.getElementById('reciterSelect');
-        reciters.forEach(r => {
+        reciters.forEach((r, idx) => {
             const opt = document.createElement('option');
-            opt.value = r.id;
+            opt.value = idx;
             opt.textContent = r.name;
             reciterSelect.appendChild(opt);
         });
@@ -163,14 +162,14 @@
             surahsList = data.chapters;
             loadSurahs();
         } catch (e) {
-            console.error("خطأ بتحميل السور", e);
+            console.error("خطأ بتحميل قائمة السور", e);
         }
     }
 
     function loadSurahs() {
-        const reciterId = document.getElementById('reciterSelect').value;
+        const reciterIndex = document.getElementById('reciterSelect').value;
         const surahSelect = document.getElementById('surahSelect');
-        const selectedReciter = reciters.find(r => r.id === reciterId);
+        const selectedReciter = reciters[reciterIndex];
 
         document.getElementById('reciterImg').src = selectedReciter.img;
         surahSelect.innerHTML = '';
