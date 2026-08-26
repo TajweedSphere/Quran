@@ -127,7 +127,7 @@
             pointer-events: none;
         }
 
-        .error-msg {
+        .status-msg {
             color: #d9534f;
             font-weight: bold;
             margin-top: 10px;
@@ -144,137 +144,117 @@
     <div class="container">
         <div class="controls-grid">
             <div>
-                <label for="reciterSelect">اختر القارئ (50 قارئ):</label>
-                <select id="reciterSelect" onchange="loadAudio()"></select>
+                <label for="reciterSelect">اختر القارئ:</label>
+                <select id="reciterSelect" onchange="loadSurahsForReciter()"></select>
             </div>
             <div>
                 <label for="surahSelect">اختر السورة:</label>
-                <select id="surahSelect" onchange="loadAudio()"></select>
+                <select id="surahSelect" onchange="playAudio()"></select>
             </div>
         </div>
 
         <div class="audio-player-box">
-            <h3 id="nowPlaying">جاري التحميل...</h3>
-            <p id="statusMsg" class="error-msg"></p>
+            <h3 id="nowPlaying">جاري تحميل القراء...</h3>
+            <p id="statusMsg" class="status-msg"></p>
             <audio id="audioPlayer" controls></audio>
             <br>
-            <a id="downloadBtn" class="download-btn" href="#" download target="_blank">📥 تحميل السورة (MP3)</a>
+            <a id="downloadBtn" class="download-btn disabled" href="#" download target="_blank">📥 تحميل السورة (MP3)</a>
         </div>
     </div>
 
     <script>
-        const recitersList = [
-            { name: "ياسر الدوسري", server: "https://server11.mp3quran.net/yasser/" },
-            { name: "محمد صديق المنشاوي (مرتل)", server: "https://server10.mp3quran.net/minsh/" },
-            { name: "محمد صديق المنشاوي (مجود)", server: "https://server10.mp3quran.net/minsh/Almusshaf-Almojawwad/" },
-            { name: "عبد الباسط عبد الصمد (مرتل)", server: "https://server7.mp3quran.net/basit/" },
-            { name: "عبد الباسط عبد الصمد (مجود)", server: "https://server7.mp3quran.net/basit/Almusshaf-Almojawwad/" },
-            { name: "محمود خليل الحصري (مرتل)", server: "https://server13.mp3quran.net/hussary/" },
-            { name: "محمود خليل الحصري (مجود)", server: "https://server13.mp3quran.net/hussary/Almusshaf-Almojawwad/" },
-            { name: "ماهر المعيقلي", server: "https://server12.mp3quran.net/maher/" },
-            { name: "محمد أيوب", server: "https://server8.mp3quran.net/m_ayyoub/" },
-            { name: "محمد اللحيدان", server: "https://server8.mp3quran.net/lhdan/" },
-            { name: "مهدي الشيشاني", server: "https://server14.mp3quran.net/shis/" },
-            { name: "عبد الرحمن السديس", server: "https://server11.mp3quran.net/sds/" },
-            { name: "سعود الشريم", server: "https://server7.mp3quran.net/shur/" },
-            { name: "سعد الغامدي", server: "https://server7.mp3quran.net/s_gmd/" },
-            { name: "مشاري العفاسي", server: "https://server8.mp3quran.net/afs/" },
-            { name: "أحمد بن علي العجمي", server: "https://server10.mp3quran.net/ajm/" },
-            { name: "أبو بكر الشاطري", server: "https://server11.mp3quran.net/shatri/" },
-            { name: "علي الحذيفي", server: "https://server9.mp3quran.net/hthfi/" },
-            { name: "فارس عباد", server: "https://server8.mp3quran.net/frs_a/" },
-            { name: "إدريس أبكر", server: "https://server6.mp3quran.net/abkar/" },
-            { name: "ناصر القطامي", server: "https://server6.mp3quran.net/qtm/" },
-            { name: "هاني الرفاعي", server: "https://server8.mp3quran.net/hrefe/" },
-            { name: "صلاح بو خاطر", server: "https://server8.mp3quran.net/bu_khtr/" },
-            { name: "خالد الجليل", server: "https://server10.mp3quran.net/jleel/" },
-            { name: "محمود علي البنا (مرتل)", server: "https://server8.mp3quran.net/bna/" },
-            { name: "محمود علي البنا (مجود)", server: "https://server8.mp3quran.net/bna/Almusshaf-Almojawwad/" },
-            { name: "مصطفى إسماعيل", server: "https://server8.mp3quran.net/mustafa/" },
-            { name: "عبد الرشيد صوفي", server: "https://server16.mp3quran.net/sofi/Rwayat-Khalf-An-Hamzah/" },
-            { name: "محمد المحيسني", server: "https://server11.mp3quran.net/mhesne/" },
-            { name: "عادل ريان", server: "https://server8.mp3quran.net/ryan/" },
-            { name: "عبد المحسن القاسم", server: "https://server8.mp3quran.net/qasm/" },
-            { name: "توفيق الصائغ", server: "https://server6.mp3quran.net/twfeeq/" },
-            { name: "عبد البارئ الثبيتي", server: "https://server6.mp3quran.net/thubti/" },
-            { name: "خالد القحطاني", server: "https://server10.mp3quran.net/qht/" },
-            { name: "صلاح البدير", server: "https://server6.mp3quran.net/s_bdr/" },
-            { name: "عبد الله الجهني", server: "https://server13.mp3quran.net/jhn/" },
-            { name: "نبيل الرفاعي", server: "https://server9.mp3quran.net/nabil/" },
-            { name: "علي جابر", server: "https://server11.mp3quran.net/a_jabr/" },
-            { name: "محمد جبريل", server: "https://server8.mp3quran.net/jbrl/" },
-            { name: "شيرازاد طاهر", server: "https://server12.mp3quran.net/shirazad/" },
-            { name: "معيض الحارثي", server: "https://server8.mp3quran.net/harthy/" },
-            { name: "حاتم فريد الواعر", server: "https://server11.mp3quran.net/hatem/" },
-            { name: "عبد الله خياط", server: "https://server12.mp3quran.net/kyat/" },
-            { name: "جمعان العصيمي", server: "https://server6.mp3quran.net/jmn/" },
-            { name: "إبراهيم الأخضر", server: "https://server6.mp3quran.net/akhdar/" },
-            { name: "يوسف بن نوح أحمد", server: "https://server8.mp3quran.net/nooh/" },
-            { name: "مفتاح السلطني", server: "https://server10.mp3quran.net/a_sltn/" },
-            { name: "عبد العزيز الأحمد", server: "https://server11.mp3quran.net/a_ahmed/" },
-            { name: "مصطفى اللاهوني", server: "https://server6.mp3quran.net/lahoni/" },
-            { name: "خالد المهنا", server: "https://server11.mp3quran.net/mohna/" }
-        ];
+        let recitersData = [];
+        let allSurahs = [];
 
         async function initApp() {
-            const reciterSelect = document.getElementById('reciterSelect');
-            recitersList.forEach((r) => {
-                let opt = document.createElement('option');
-                opt.value = r.server;
-                opt.innerText = r.name;
-                reciterSelect.appendChild(opt);
-            });
-
             try {
-                const response = await fetch('https://api.alquran.cloud/v1/surah');
-                const data = await response.json();
-                const surahSelect = document.getElementById('surahSelect');
+                // جلب قائمة السور الرسمية
+                const surahRes = await fetch('https://api.alquran.cloud/v1/surah');
+                const surahJson = await surahRes.json();
+                allSurahs = surahJson.data;
 
-                data.data.forEach(surah => {
+                // جلب قائمة القراء مع السيرفرات المتاحة لكل قارئ من API MP3Quran الرسمي
+                const reciterRes = await fetch('https://mp3quran.net/api/v3/reciters?language=ar');
+                const reciterJson = await reciterRes.json();
+                
+                // تصفية القراء وتجهيز القائمة
+                recitersData = reciterJson.reciters.map(r => {
+                    const moshaf = r.moshaf[0]; // المصحف الأساسي المتاح
+                    return {
+                        id: r.id,
+                        name: r.name,
+                        server: moshaf ? moshaf.server : '',
+                        surahList: moshaf ? moshaf.surah_list.split(',').map(Number) : []
+                    };
+                }).filter(r => r.server !== '');
+
+                const reciterSelect = document.getElementById('reciterSelect');
+                reciterSelect.innerHTML = '';
+                
+                recitersData.forEach((r, idx) => {
                     let opt = document.createElement('option');
-                    opt.value = String(surah.number).padStart(3, '0');
-                    opt.innerText = `${surah.number}. ${surah.name}`;
-                    surahSelect.appendChild(opt);
+                    opt.value = idx;
+                    opt.innerText = r.name;
+                    reciterSelect.appendChild(opt);
                 });
 
-                loadAudio();
+                loadSurahsForReciter();
             } catch (err) {
-                console.error("خطأ في تحميل السور:", err);
+                document.getElementById('nowPlaying').innerText = "حدث خطأ في تحميل البيانات، يرجى تحديث الصفحة.";
+                console.error(err);
             }
         }
 
-        function loadAudio() {
-            const reciterSelect = document.getElementById('reciterSelect');
+        function loadSurahsForReciter() {
+            const reciterIdx = document.getElementById('reciterSelect').value;
+            const currentReciter = recitersData[reciterIdx];
             const surahSelect = document.getElementById('surahSelect');
+            
+            surahSelect.innerHTML = '';
+
+            // تصفية السور بحيث تظهر فقط السور المتوفرة بصوت هاد القارئ بالتحديد
+            allSurahs.forEach(surah => {
+                if (currentReciter.surahList.includes(surah.number)) {
+                    let opt = document.createElement('option');
+                    opt.value = surah.number;
+                    opt.innerText = `${surah.number}. ${surah.name}`;
+                    surahSelect.appendChild(opt);
+                }
+            });
+
+            playAudio();
+        }
+
+        function playAudio() {
+            const reciterIdx = document.getElementById('reciterSelect').value;
+            const surahNum = document.getElementById('surahSelect').value;
+            
+            if (!surahNum) {
+                document.getElementById('nowPlaying').innerText = "عذراً، لا توجد سور متاحة لهذا القارئ حالياً.";
+                document.getElementById('audioPlayer').src = "";
+                document.getElementById('downloadBtn').classList.add('disabled');
+                return;
+            }
+
+            const currentReciter = recitersData[reciterIdx];
+            const surahObj = allSurahs.find(s => s.number == surahNum);
+            
+            // تنسيق رقم السورة إلى 3 خانات (مثل 001, 052)
+            const formattedSurahNum = String(surahNum).padStart(3, '0');
+            const audioUrl = `${currentReciter.server}${formattedSurahNum}.mp3`;
+
             const audioPlayer = document.getElementById('audioPlayer');
             const downloadBtn = document.getElementById('downloadBtn');
             const statusMsg = document.getElementById('statusMsg');
 
-            const reciterServer = reciterSelect.value;
-            const surahNum = surahSelect.value;
-            const reciterName = reciterSelect.options[reciterSelect.selectedIndex].text;
-            const surahName = surahSelect.options[surahSelect.selectedIndex].text;
-
-            const audioUrl = `${reciterServer}${surahNum}.mp3`;
-            
-            statusMsg.innerText = "جاري التحقق من التلاوة...";
-            downloadBtn.classList.add('disabled');
-
+            statusMsg.innerText = "";
             audioPlayer.src = audioUrl;
             
-            audioPlayer.oncanplay = function() {
-                statusMsg.innerText = "";
-                document.getElementById('nowPlaying').innerText = `سورة ${surahName} - بصوت ${reciterName}`;
-                downloadBtn.href = audioUrl;
-                downloadBtn.setAttribute('download', `${surahName} - ${reciterName}.mp3`);
-                downloadBtn.classList.remove('disabled');
-            };
+            document.getElementById('nowPlaying').innerText = `سورة ${surahObj.name} - بصوت ${currentReciter.name}`;
 
-            audioPlayer.onerror = function() {
-                statusMsg.innerText = `عذراً، هذه السورة غير متوفرة للتسجيل التلاوة الخاص بـ (${reciterName}). يرجى اختيار قارئ آخر أو سورة أخرى.`;
-                document.getElementById('nowPlaying').innerText = `غير متوفر`;
-                downloadBtn.classList.add('disabled');
-            };
+            downloadBtn.href = audioUrl;
+            downloadBtn.setAttribute('download', `${surahObj.name} - ${currentReciter.name}.mp3`);
+                downloadBtn.classList.remove('disabled');
         }
 
         window.onload = initApp;
