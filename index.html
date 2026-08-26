@@ -1,219 +1,403 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-NPY6QLCZGB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-NPY6QLCZGB');
-</script>
-    <meta name="google-site-verification" content="vLIY1C10e3HXNRgCfEKArzq2XOKA0UoMbxnWJPHBhFE" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مكتبة القرآن الكريم</title>
+    <title>Tajweed Sphere | منصة القرآن الكريم والتجويد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #1b4332;
+            --primary-light: #2d6a4f;
             --accent: #d4af37;
-            --bg-overlay: rgba(10, 25, 47, 0.88);
-            --card-bg: rgba(255, 255, 255, 0.07);
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --text-muted: #6c757d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
         }
 
         body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #fff;
-            background: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
-                        url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80') center/cover fixed no-repeat;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
         }
 
         header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 2rem 1rem;
             text-align: center;
-            padding: 20px 0;
-            border-bottom: 2px solid var(--accent);
-            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        h1 {
+        header h1 {
+            font-family: 'Amiri', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
             color: var(--accent);
-            margin: 0 0 10px 0;
         }
 
-        .controls {
+        nav {
             display: flex;
-            gap: 15px;
+            justify-content: center;
+            gap: 10px;
+            background: var(--primary);
+            padding: 10px;
             flex-wrap: wrap;
-            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav button {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        nav button.active, nav button:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* أحكام التجويد */
+        .tajweed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .tajweed-card {
+            border: 1px solid #e9ecef;
+            border-right: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 6px;
+            background: #fdfdfd;
+        }
+
+        .tajweed-card h3 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* الاستماع والقرّاء */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         select {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .audio-player-box {
+            background: #edf2f4;
+            padding: 20px;
             border-radius: 8px;
-            border: 1px solid var(--accent);
-            background: rgba(0, 0, 0, 0.85);
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .player-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
-            padding: 25px;
             text-align: center;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .reciter-image {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            border: 3px solid var(--accent);
-            object-fit: cover;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-top: 20px;
         }
 
         audio {
             width: 100%;
-            margin-top: 20px;
-            border-radius: 8px;
-        }
-
-        .info-title {
-            font-size: 1.4em;
-            margin: 10px 0;
-            color: var(--accent);
+            margin-top: 10px;
         }
 
         .download-btn {
             display: inline-block;
             margin-top: 15px;
-            padding: 10px 25px;
-            background-color: var(--accent);
-            color: #000;
-            font-weight: bold;
-            text-decoration: none;
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
             border-radius: 6px;
-            transition: 0.3s;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
         }
 
         .download-btn:hover {
-            background-color: #fff;
+            background-color: var(--primary-light);
+        }
+
+        /* القراءة والتفسير */
+        .quran-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.6rem;
+            line-height: 2.3;
+            background: #faf8f5;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+
+        .tafsir-box {
+            background: #f4f6f8;
+            border-right: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: #333;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
     <header>
-        <h1>القرآن الكريم - أصوات نديّة</h1>
-        <p>استمع وحمّل لصفوة القراء وبكل السور</p>
+        <h1>Tajweed Sphere</h1>
+        <p>منصتك التفاعلية لتلاوة القرآن الكريم، تعلم أحكام التجويد، والتفسير المعتمد</p>
     </header>
 
-    <div class="controls">
-        <select id="reciterSelect" onchange="loadSurahs()"></select>
-        <select id="surahSelect" onchange="playAudio()"></select>
+    <nav>
+        <button class="tab-btn active" onclick="openTab('tajweed')">📖 أحكام التجويد</button>
+        <button class="tab-btn" onclick="openTab('reciters')">🎧 الاستماع والتحميل (40 قارئ)</button>
+        <button class="tab-btn" onclick="openTab('quran')">📜 القراءة والتفسير</button>
+    </nav>
+
+    <div class="container">
+
+        <!-- خانة تعليم التجويد -->
+        <section id="tajweed" class="tab-content active">
+            <h2>أساسيات أحكام التجويد</h2>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">دليل مبسط لأهم أحكام تلاوة القرآن الكريم:</p>
+            
+            <div class="tajweed-grid">
+                <div class="tajweed-card">
+                    <h3>أحكام النون الساكنة والتنوين</h3>
+                    <p>لها 4 أحكام: <b>الإظهار</b> (عند حروف الحلق)، <b>الإدغام</b> (في حروف يرملون)، <b>الإقلاب</b> (عند حرف الباء)، و<b>الإخفاء</b> (باقي الحروف).</p>
+                </div>
+                <div class="tajweed-card">
+                    <h3>أحكام الميم الساكنة</h3>
+                    <p>لها 3 أحكام: <b>الإخفاء الشفوي</b> (عند الباء)، <b>الإدغام الشفوي</b> (عند الميم)، و<b>الإظهار الشفوي</b> (باقي الحروف).</p>
+                </div>
+                <div class="tajweed-card">
+                    <h3>أحكام المدود</h3>
+                    <p>تنقسم إلى <b>مد طبيعي</b> (حركتان)، و<b>مد فرعي</b> بسبب الهمز أو السكون (كالمد المتصل، المنفصل، والعارض للسكون).</p>
+                </div>
+                <div class="tajweed-card">
+                    <h3>القلقلة</h3>
+                    <p>اهتزاز الصوت عند النطق بحرف ساكن من حروف <b>(قطب جد)</b>. ومراتبها: صغرى (في وسط الكلمة) وكبرى (عند الوقف).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- خانة الاستماع والتحميل -->
+        <section id="reciters" class="tab-content">
+            <h2>الاستماع وتحميل القرآن الكريم</h2>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">اختر القارئ والسورة للاستماع أو التحميل بصيغة MP3:</p>
+
+            <div class="controls-grid">
+                <div>
+                    <label><b>اختر القارئ:</b></label>
+                    <select id="reciterSelect" onchange="loadAudio()">
+                    </select>
+                </div>
+                <div>
+                    <label><b>اختر السورة:</b></label>
+                    <select id="surahSelect" onchange="loadAudio()">
+                    </select>
+                </div>
+            </div>
+
+            <div class="audio-player-box">
+                <h3 id="nowPlaying">اختر سورة وقارئ للبدء</h3>
+                <audio id="audioPlayer" controls>
+                    متصفحك لا يدعم تشغيل الصوت.
+                </audio>
+                <br>
+                <!-- زر التحميل المباشر -->
+                <a id="downloadBtn" class="download-btn" href="#" download target="_blank">📥 تحميل السورة (MP3)</a>
+            </div>
+        </section>
+
+        <!-- خانة القراءة والتفسير -->
+        <section id="quran" class="tab-content">
+            <h2>قراءة القرآن الكريم مع التفسير المعتمد</h2>
+            <div style="margin-bottom: 15px;">
+                <label><b>اختر السورة لعرضها مع التفسير:</b></label>
+                <select id="quranSurahSelect" onchange="loadQuranWithTafsir()">
+                </select>
+            </div>
+
+            <div id="quranContainer">
+                <div class="quran-text" id="quranText">جاري تحميل السورة...</div>
+                <div class="tafsir-box" id="tafsirText">
+                    <b>المصدر المعتمد:</b> التفسير الميسر (المجمع الملكي لطباعة المصحف الشريف).
+                </div>
+            </div>
+        </section>
+
     </div>
 
-    <div class="player-card">
-        <img id="reciterImg" class="reciter-image" src="" alt="صورة القارئ">
-        <div id="playerTitle" class="info-title">اختر القارئ والسورة</div>
-        <audio id="audioPlayer" controls></audio>
-        <br>
-        <a id="downloadBtn" class="download-btn" href="#" download target="_blank">تحميل السورة MP3</a>
-    </div>
-</div>
+    <script>
+        const recitersList = [
+            { name: "ياسر الدوسري", server: "https://server11.mp3quran.net/yasser/" },
+            { name: "محمد صديق المنشاوي (المجود)", server: "https://server10.mp3quran.net/minsh/Almusshaf-Almojawwad/" },
+            { name: "عبد الباسط عبد الصمد (المجود)", server: "https://server7.mp3quran.net/basit/Almusshaf-Almojawwad/" },
+            { name: "محمود خليل الحصري", server: "https://server13.mp3quran.net/hussary/" },
+            { name: "ماهر المعيقلي", server: "https://server12.mp3quran.net/maher/" },
+            { name: "عبد الرحمن السديس", server: "https://server11.mp3quran.net/sds/" },
+            { name: "محمد أيوب", server: "https://server8.mp3quran.net/m_ayyoub/" },
+            { name: "محمد اللحيدان", server: "https://server8.mp3quran.net/lhdan/" },
+            { name: "مهدي الشيشاني", server: "https://server14.mp3quran.net/shis/" },
+            { name: "أحمد بن علي العجمي", server: "https://server10.mp3quran.net/ajm/" },
+            { name: "سعود الشريم", server: "https://server7.mp3quran.net/shur/" },
+            { name: "سعد الغامدي", server: "https://server7.mp3quran.net/s_gmd/" },
+            { name: "مشاري العفاسي", server: "https://server8.mp3quran.net/afs/" },
+            { name: "أبو بكر الشاطري", server: "https://server11.mp3quran.net/shatri/" },
+            { name: "علي الحذيفي", server: "https://server9.mp3quran.net/hthfi/" },
+            { name: "فارس عباد", server: "https://server8.mp3quran.net/frs_a/" },
+            { name: "إدريس أبكر", server: "https://server6.mp3quran.net/abkar/" },
+            { name: "ناصر القطامي", server: "https://server6.mp3quran.net/qtm/" },
+            { name: "هاني الرفاعي", server: "https://server8.mp3quran.net/hrefe/" },
+            { name: "صلاح بو خاطر", server: "https://server8.mp3quran.net/bu_khtr/" },
+            { name: "عبد الله خياط", server: "https://server12.mp3quran.net/kyat/" },
+            { name: "خالد الجليل", server: "https://server10.mp3quran.net/jleel/" },
+            { name: "محمود علي البنا", server: "https://server8.mp3quran.net/bna/" },
+            { name: "مصطفى إسماعيل", server: "https://server8.mp3quran.net/mustafa/" },
+            { name: "عبد الرشيد صوفي", server: "https://server16.mp3quran.net/sofi/Rwayat-Khalf-An-Hamzah/" },
+            { name: "محمد المحيسني", server: "https://server11.mp3quran.net/mhesne/" },
+            { name: "عادل ريان", server: "https://server8.mp3quran.net/ryan/" },
+            { name: "عبد المحسن القاسم", server: "https://server8.mp3quran.net/qasm/" },
+            { name: "توفيق الصائغ", server: "https://server6.mp3quran.net/twfeeq/" },
+            { name: "عبد البارئ الثبيتي", server: "https://server6.mp3quran.net/thubti/" },
+            { name: "خالد القحطاني", server: "https://server10.mp3quran.net/qht/" },
+            { name: "صلاح البدير", server: "https://server6.mp3quran.net/s_bdr/" },
+            { name: "عبد الله الجهني", server: "https://server13.mp3quran.net/jhn/" },
+            { name: "نبيل الرفاعي", server: "https://server9.mp3quran.net/nabil/" },
+            { name: "علي جابر", server: "https://server11.mp3quran.net/a_jabr/" },
+            { name: "محمد جبريل", server: "https://server8.mp3quran.net/jbrl/" },
+            { name: "شيرازاد طاهر", server: "https://server12.mp3quran.net/shirazad/" },
+            { name: "معيض الحارثي", server: "https://server8.mp3quran.net/harthy/" },
+            { name: "حضر الحموي", server: "https://server9.mp3quran.net/hthr/" },
+            { name: "حاتم فريد الواعر", server: "https://server11.mp3quran.net/hatem/" }
+        ];
 
-<script>
-    const reciters = [
-        { name: "ياسر الدوسري", server: "https://server11.mp3quran.net/yasser/", img: "https://www.mp3quran.net/images/reciters/128.jpg" },
-        { name: "ماهر المعيقلي", server: "https://server12.mp3quran.net/maher/", img: "https://www.mp3quran.net/images/reciters/102.jpg" },
-        { name: "عبد الرحمن السديس", server: "https://server11.mp3quran.net/sds/", img: "https://www.mp3quran.net/images/reciters/64.jpg" },
-        { name: "سعود الشريم", server: "https://server7.mp3quran.net/shur/", img: "https://www.mp3quran.net/images/reciters/54.jpg" },
-        { name: "مشاري العفاسي", server: "https://server8.mp3quran.net/afs/", img: "https://www.mp3quran.net/images/reciters/118.jpg" },
-        { name: "سعد الغامدي", server: "https://server7.mp3quran.net/s_gmd/", img: "https://www.mp3quran.net/images/reciters/32.jpg" },
-        { name: "أحمد بن علي العجمي", server: "https://server10.mp3quran.net/ajm/", img: "https://www.mp3quran.net/images/reciters/10.jpg" },
-        { name: "أبو بكر الشاطري", server: "https://server11.mp3quran.net/shatri/", img: "https://www.mp3quran.net/images/reciters/46.jpg" },
-        { name: "ناصر القطامي", server: "https://server6.mp3quran.net/qtm/", img: "https://www.mp3quran.net/images/reciters/114.jpg" },
-        { name: "محمود خليل الحصري", server: "https://server13.mp3quran.net/husr/", img: "https://www.mp3quran.net/images/reciters/98.jpg" },
-        { name: "محمد صديق المنشاوي", server: "https://server10.mp3quran.net/minsh/", img: "https://www.mp3quran.net/images/reciters/108.jpg" },
-        { name: "عبد الباسط عبد الصمد", server: "https://server7.mp3quran.net/basit/", img: "https://www.mp3quran.net/images/reciters/29.jpg" }
-    ];
-
-    let surahsList = [];
-
-    async function init() {
-        const reciterSelect = document.getElementById('reciterSelect');
-        reciters.forEach((r, idx) => {
-            const opt = document.createElement('option');
-            opt.value = idx;
-            opt.textContent = r.name;
-            reciterSelect.appendChild(opt);
-        });
-
-        try {
-            const res = await fetch('https://api.quran.com/api/v4/chapters?language=ar');
-            const data = await res.json();
-            surahsList = data.chapters;
-            loadSurahs();
-        } catch (e) {
-            console.error("خطأ بتحميل قائمة السور", e);
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
-    }
 
-    function loadSurahs() {
-        const reciterIndex = document.getElementById('reciterSelect').value;
-        const surahSelect = document.getElementById('surahSelect');
-        const selectedReciter = reciters[reciterIndex];
+        async function initApp() {
+            const reciterSelect = document.getElementById('reciterSelect');
+            recitersList.forEach((r) => {
+                let opt = document.createElement('option');
+                opt.value = r.server;
+                opt.innerText = r.name;
+                reciterSelect.appendChild(opt);
+            });
 
-        document.getElementById('reciterImg').src = selectedReciter.img;
-        surahSelect.innerHTML = '';
+            const response = await fetch('https://api.alquran.cloud/v1/surah');
+            const data = await response.json();
+            
+            const surahSelect = document.getElementById('surahSelect');
+            const quranSurahSelect = document.getElementById('quranSurahSelect');
 
-        surahsList.forEach(surah => {
-            const opt = document.createElement('option');
-            const padNum = String(surah.id).padStart(3, '0');
-            opt.value = `${selectedReciter.server}${padNum}.mp3`;
-            opt.textContent = `${surah.id}. سورة ${surah.name_arabic}`;
-            surahSelect.appendChild(opt);
-        });
+            data.data.forEach(surah => {
+                let opt1 = document.createElement('option');
+                opt1.value = String(surah.number).padStart(3, '0');
+                opt1.innerText = `${surah.number}. ${surah.name}`;
+                surahSelect.appendChild(opt1);
 
-        playAudio();
-    }
+                let opt2 = document.createElement('option');
+                opt2.value = surah.number;
+                opt2.innerText = `${surah.number}. ${surah.name}`;
+                quranSurahSelect.appendChild(opt2);
+            });
 
-    function playAudio() {
-        const surahSelect = document.getElementById('surahSelect');
-        const reciterSelect = document.getElementById('reciterSelect');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const playerTitle = document.getElementById('playerTitle');
-        const downloadBtn = document.getElementById('downloadBtn');
+            loadAudio();
+            loadQuranWithTafsir();
+        }
 
-        if (surahSelect.options.length > 0) {
-            const reciterName = reciterSelect.options[reciterSelect.selectedIndex].text;
-            const surahName = surahSelect.options[surahSelect.selectedIndex].text;
-            const audioUrl = surahSelect.value;
+        // تحديث المشغّل ورابط التحميل
+        function loadAudio() {
+            const reciterServer = document.getElementById('reciterSelect').value;
+            const surahNum = document.getElementById('surahSelect').value;
+            const reciterName = document.getElementById('reciterSelect').options[document.getElementById('reciterSelect').selectedIndex].text;
+            const surahName = document.getElementById('surahSelect').options[document.getElementById('surahSelect').selectedIndex].text;
+
+            const audioUrl = `${reciterServer}${surahNum}.mp3`;
+            const audioPlayer = document.getElementById('audioPlayer');
+            const downloadBtn = document.getElementById('downloadBtn');
 
             audioPlayer.src = audioUrl;
-            downloadBtn.href = audioUrl;
-            playerTitle.textContent = `${surahName} - بصوت ${reciterName}`;
-        }
-    }
+            document.getElementById('nowPlaying').innerText = `تشغيل: ${surahName} - بصوت ${reciterName}`;
 
-    init();
-</script>
+            // ضبط رابط واسم ملف التحميل
+            downloadBtn.href = audioUrl;
+            downloadBtn.setAttribute('download', `${surahName} - ${reciterName}.mp3`);
+        }
+
+        async function loadQuranWithTafsir() {
+            const surahNum = document.getElementById('quranSurahSelect').value;
+            const quranTextDiv = document.getElementById('quranText');
+            const tafsirTextDiv = document.getElementById('tafsirText');
+
+            quranTextDiv.innerHTML = "جاري جلب السورة والتفسير المعتمد...";
+
+            try {
+                const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/ar.jalalayn`);
+                const resText = await fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/ar.alafasy`);
+                
+                const dataTafsir = await res.json();
+                const dataQuran = await resText.json();
+
+                let quranHtml = "";
+                let tafsirHtml = "<h3>التفسير المعتمد (تفسير الجلالين / الميسر):</h3><br>";
+
+                dataQuran.data.ayahs.forEach((ayah, index) => {
+                    quranHtml += `${ayah.text} ﴿${ayah.numberInSurah}﴾ `;
+                    tafsirHtml += `<p><b>[آية ${ayah.numberInSurah}]:</b> ${dataTafsir.data.ayahs[index].text}</p><br>`;
+                });
+
+                quranTextDiv.innerHTML = quranHtml;
+                tafsirTextDiv.innerHTML = tafsirHtml;
+            } catch (err) {
+                quranTextDiv.innerHTML = "حدث خطأ أثناء تحميل البيانات، يرجى المحاولة لاحقاً.";
+            }
+        }
+
+        window.onload = initApp;
+    </script>
 </body>
 </html>
