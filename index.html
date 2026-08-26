@@ -493,3 +493,13 @@
             }
             
             if (loadedT
+afsirData && loadedTafsirData[index]) {
+                document.getElementById('tafsirHeader').innerText = `تفسير الآية رقم (${ayahNumber})`;
+                document.getElementById('tafsirBody').innerText = loadedTafsirData[index].text;
+            }
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
