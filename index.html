@@ -121,6 +121,17 @@
             background-color: var(--primary-light);
             transform: translateY(-2px);
         }
+
+        .download-btn.disabled {
+            background-color: #ccc;
+            pointer-events: none;
+        }
+
+        .error-msg {
+            color: #d9534f;
+            font-weight: bold;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -144,7 +155,8 @@
 
         <div class="audio-player-box">
             <h3 id="nowPlaying">جاري التحميل...</h3>
-            <audio id="audioPlayer" controls autoplay></audio>
+            <p id="statusMsg" class="error-msg"></p>
+            <audio id="audioPlayer" controls></audio>
             <br>
             <a id="downloadBtn" class="download-btn" href="#" download target="_blank">📥 تحميل السورة (MP3)</a>
         </div>
@@ -234,6 +246,9 @@
         function loadAudio() {
             const reciterSelect = document.getElementById('reciterSelect');
             const surahSelect = document.getElementById('surahSelect');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const statusMsg = document.getElementById('statusMsg');
 
             const reciterServer = reciterSelect.value;
             const surahNum = surahSelect.value;
@@ -241,14 +256,25 @@
             const surahName = surahSelect.options[surahSelect.selectedIndex].text;
 
             const audioUrl = `${reciterServer}${surahNum}.mp3`;
-            const audioPlayer = document.getElementById('audioPlayer');
-            const downloadBtn = document.getElementById('downloadBtn');
+            
+            statusMsg.innerText = "جاري التحقق من التلاوة...";
+            downloadBtn.classList.add('disabled');
 
             audioPlayer.src = audioUrl;
-            document.getElementById('nowPlaying').innerText = `سورة ${surahName} - بصوت ${reciterName}`;
+            
+            audioPlayer.oncanplay = function() {
+                statusMsg.innerText = "";
+                document.getElementById('nowPlaying').innerText = `سورة ${surahName} - بصوت ${reciterName}`;
+                downloadBtn.href = audioUrl;
+                downloadBtn.setAttribute('download', `${surahName} - ${reciterName}.mp3`);
+                downloadBtn.classList.remove('disabled');
+            };
 
-            downloadBtn.href = audioUrl;
-            downloadBtn.setAttribute('download', `${surahName} - ${reciterName}.mp3`);
+            audioPlayer.onerror = function() {
+                statusMsg.innerText = `عذراً، هذه السورة غير متوفرة للتسجيل التلاوة الخاص بـ (${reciterName}). يرجى اختيار قارئ آخر أو سورة أخرى.`;
+                document.getElementById('nowPlaying').innerText = `غير متوفر`;
+                downloadBtn.classList.add('disabled');
+            };
         }
 
         window.onload = initApp;
