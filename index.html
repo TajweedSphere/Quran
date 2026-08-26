@@ -239,13 +239,11 @@
         <h1>Tajweed Sphere</h1>
         <p>القرآن الكريم تلاوةً واستماعاً وتفصيلاً لأحكام التجويد والتفسير المعتمد</p>
     </header>
-
-    <nav>
-  <a href="#tajweed" class="tab-btn active">📖 شرح التجويد والأمثلة</a>
-  <a href="#audio" class="tab-btn">🎧 الاستماع والتحميل (40 قارئ)</a>
-  <a href="#quran" class="tab-btn">📜 المصحف الشريف والتفسير</a>
-    </nav>
-
+<nav>
+  <button class="tab-btn active" onclick="showTab('tajweed')">📖 شرح التجويد والأمثلة</button>
+  <button class="tab-btn" onclick="showTab('audio')">🎧 الاستماع والتحميل (40 قارئ)</button>
+  <button class="tab-btn" onclick="showTab('quran')">📜 المصحف الشريف والتفسير</button>
+</nav>
     <div class="container">
 
         <!-- 1. قسم التجويد المفصّل مع الشرح والأمثلة -->
@@ -491,3 +489,24 @@
             document.querySelectorAll('.ayah-item').forEach(el => el.classList.remove('selected'));
             if(event && event.currentTarget) {
  
+<script>
+function showTab(tabId) {
+  // اخفاء كل الأقسام
+  document.querySelectorAll('.tab-content, section').forEach(sec => {
+    if (sec.id) sec.style.display = 'none';
+  });
+  
+  // إظهار القسم المطلوب
+  const activeTab = document.getElementById(tabId);
+  if (activeTab) activeTab.style.display = 'block';
+
+  // تغيير شكل الكبسة النشطة
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// إظهار التجويد أول ما تفتح الصفحة
+document.addEventListener("DOMContentLoaded", () => {
+  showTab('tajweed');
+});
+</script>
