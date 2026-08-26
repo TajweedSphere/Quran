@@ -72,7 +72,6 @@
             color: var(--primary);
         }
 
-        /* توسيع عرض الصفحة */
         .container {
             max-width: 1450px;
             margin: 25px auto;
@@ -91,7 +90,6 @@
             display: block;
         }
 
-        /* تنسيق قسم التجويد الشامل */
         .tajweed-section-title {
             color: var(--primary);
             border-bottom: 3px solid var(--accent);
@@ -130,7 +128,6 @@
             color: #12372a;
         }
 
-        /* قسم الاستماع والتحميل */
         .controls-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -170,7 +167,6 @@
             font-weight: bold;
         }
 
-        /* عرض المصحف والتفسير بنفس الصفحة */
         .quran-display-container {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -239,14 +235,16 @@
         <h1>Tajweed Sphere</h1>
         <p>القرآن الكريم تلاوةً واستماعاً وتفصيلاً لأحكام التجويد والتفسير المعتمد</p>
     </header>
-<nav>
-  <button class="tab-btn active" onclick="showTab('tajweed')">📖 شرح التجويد والأمثلة</button>
-  <button class="tab-btn" onclick="showTab('audio')">🎧 الاستماع والتحميل (40 قارئ)</button>
-  <button class="tab-btn" onclick="showTab('quran')">📜 المصحف الشريف والتفسير</button>
-</nav>
+
+    <nav>
+        <button class="tab-btn active" onclick="showTab('tajweed', event)">📖 شرح التجويد والأمثلة</button>
+        <button class="tab-btn" onclick="showTab('audio', event)">🎧 الاستماع والتحميل (40 قارئ)</button>
+        <button class="tab-btn" onclick="showTab('quran', event)">📜 المصحف الشريف والتفسير</button>
+    </nav>
+
     <div class="container">
 
-        <!-- 1. قسم التجويد المفصّل مع الشرح والأمثلة -->
+        <!-- 1. قسم التجويد -->
         <section id="tajweed" class="tab-content active">
             <h2>دليل أحكام تجويد القرآن الكريم الشامل</h2>
             <p style="color: #666;">شرح مفصل ومسطّر لأهم القواعد مع الأمثلة التوضيحية من القرآن الكريم:</p>
@@ -310,7 +308,7 @@
         </section>
 
         <!-- 2. قسم الاستماع والتحميل -->
-        <section id="reciters" class="tab-content">
+        <section id="audio" class="tab-content">
             <h2>الاستماع وتحميل القرآن الكريم MP3</h2>
             <p style="color: #666; margin-bottom: 15px;">اختر القارئ والسورة للاستماع أو التحميل التلقائي:</p>
 
@@ -333,7 +331,7 @@
             </div>
         </section>
 
-        <!-- 3. قسم قراءة المصحف والتفسير المعتمد بنفس الصفحة -->
+        <!-- 3. قسم المصحف والتفسير -->
         <section id="quran" class="tab-content">
             <h2>قراءة المصحف والتفسير بنفس الصفحة</h2>
             <p style="color: #666;">اختر السورة، واضغط على أي آية لقراءة تفسيرها المعتمد فوراً على اليسار:</p>
@@ -355,7 +353,6 @@
     </div>
 
     <script>
-        // قائمة القراء المعتمدة مع السيرفرات المباشرة والشغالة لجميع السور
         const recitersList = [
             { name: "ياسر الدوسري", server: "https://server11.mp3quran.net/yasser/" },
             { name: "محمد صديق المنشاوي (المجود)", server: "https://server10.mp3quran.net/minsh/Almusshaf-Almojawwad/" },
@@ -401,12 +398,16 @@
 
         let loadedTafsirData = [];
 
-        function openTab(tabId) {
+        function showTab(tabId, evt) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) selectedTab.classList.add('active');
+            
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('active');
+            }
         }
 
         async function initApp() {
@@ -473,40 +474,22 @@
 
                 let htmlContent = "";
                 dataQuran.data.ayahs.forEach((ayah, index) => {
-                    htmlContent += `<span class="ayah-item" onclick="displayTafsir(${index}, ${ayah.numberInSurah})">
+                    htmlContent += `<span class="ayah-item" onclick="displayTafsir(${index}, ${ayah.numberInSurah}, event)">
                         ${ayah.text} <span class="ayah-number">﴿${ayah.numberInSurah}﴾</span>
                     </span> `;
                 });
 
                 mushafBox.innerHTML = htmlContent;
-                displayTafsir(0, 1);
+                displayTafsir(0, 1, null);
             } catch (err) {
                 mushafBox.innerHTML = "حدث خطأ أثناء تحميل البيانات، يرجى إعادة المحاولة.";
             }
         }
 
-        function displayTafsir(index, ayahNumber) {
+        function displayTafsir(index, ayahNumber, evt) {
             document.querySelectorAll('.ayah-item').forEach(el => el.classList.remove('selected'));
-            if(event && event.currentTarget) {
- 
-<script>
-function showTab(tabId) {
-  // اخفاء كل الأقسام
-  document.querySelectorAll('.tab-content, section').forEach(sec => {
-    if (sec.id) sec.style.display = 'none';
-  });
-  
-  // إظهار القسم المطلوب
-  const activeTab = document.getElementById(tabId);
-  if (activeTab) activeTab.style.display = 'block';
-
-  // تغيير شكل الكبسة النشطة
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-}
-
-// إظهار التجويد أول ما تفتح الصفحة
-document.addEventListener("DOMContentLoaded", () => {
-  showTab('tajweed');
-});
-</script>
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('selected');
+            }
+            
+            if (loadedT
