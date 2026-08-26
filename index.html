@@ -419,26 +419,30 @@
                 reciterSelect.appendChild(opt);
             });
 
-            const response = await fetch('https://api.alquran.cloud/v1/surah');
-            const data = await response.json();
-            
-            const surahSelect = document.getElementById('surahSelect');
-            const quranSurahSelect = document.getElementById('quranSurahSelect');
+            try {
+                const response = await fetch('https://api.alquran.cloud/v1/surah');
+                const data = await response.json();
+                
+                const surahSelect = document.getElementById('surahSelect');
+                const quranSurahSelect = document.getElementById('quranSurahSelect');
 
-            data.data.forEach(surah => {
-                let opt1 = document.createElement('option');
-                opt1.value = String(surah.number).padStart(3, '0');
-                opt1.innerText = `${surah.number}. ${surah.name}`;
-                surahSelect.appendChild(opt1);
+                data.data.forEach(surah => {
+                    let opt1 = document.createElement('option');
+                    opt1.value = String(surah.number).padStart(3, '0');
+                    opt1.innerText = `${surah.number}. ${surah.name}`;
+                    surahSelect.appendChild(opt1);
 
-                let opt2 = document.createElement('option');
-                opt2.value = surah.number;
-                opt2.innerText = `${surah.number}. ${surah.name}`;
-                quranSurahSelect.appendChild(opt2);
-            });
+                    let opt2 = document.createElement('option');
+                    opt2.value = surah.number;
+                    opt2.innerText = `${surah.number}. ${surah.name}`;
+                    quranSurahSelect.appendChild(opt2);
+                });
 
-            loadAudio();
-            loadQuranAndTafsir();
+                loadAudio();
+                loadQuranAndTafsir();
+            } catch (err) {
+                console.error("Error initializing app:", err);
+            }
         }
 
         function loadAudio() {
@@ -485,15 +489,15 @@
                 mushafBox.innerHTML = "حدث خطأ أثناء تحميل البيانات، يرجى إعادة المحاولة.";
             }
         }
-
         function displayTafsir(index, ayahNumber, evt) {
+       document.querySelectorAll('.ayah-item').forEach(el =
+                                                               function displayTafsir(index, ayahNumber, evt) {
             document.querySelectorAll('.ayah-item').forEach(el => el.classList.remove('selected'));
             if (evt && evt.currentTarget) {
                 evt.currentTarget.classList.add('selected');
             }
             
-            if (loadedT
-afsirData && loadedTafsirData[index]) {
+            if (loadedTafsirData && loadedTafsirData[index]) {
                 document.getElementById('tafsirHeader').innerText = `تفسير الآية رقم (${ayahNumber})`;
                 document.getElementById('tafsirBody').innerText = loadedTafsirData[index].text;
             }
